@@ -26,16 +26,22 @@ const db = getFirestore(app);
 const lang = localStorage.getItem("lang") || "zh";
 
 export async function handlePunch(type) {
-  let name = localStorage.getItem("username");
-  if (!name || name.trim() === "") {
-    name = prompt("請輸入您的姓名：");
-    if (!name || name.trim() === "") {
-      alert("⚠️ 請輸入有效的姓名再打卡！");
-      return;
-    }
-    localStorage.setItem("username", name.trim());
+ let name = localStorage.getItem("username");
 
+ if (!name || name.trim() === "") {
+  const lang = localStorage.getItem("lang") || "zh";
+  const promptText = lang === "id" ? "Silakan masukkan nama Anda:" : "請輸入您的姓名：";
+  const errorText = lang === "id"
+    ? "⚠️ Masukkan nama yang valid sebelum absen!"
+    : "⚠️ 請輸入有效的姓名再打卡！";
+
+  name = prompt(promptText);
+  if (!name || name.trim() === "") {
+    alert(errorText);
+    return;
   }
+  localStorage.setItem("username", name.trim());
+}
 
   if (!navigator.geolocation) {
     document.getElementById("status").innerText = "❌ 無法取得 GPS 位置。";
@@ -90,10 +96,11 @@ export async function loadRecords() {
 
   try {
     const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      list.innerHTML = "<p>📭 尚無打卡紀錄</p>";
-      return;
-    }
+   if (snapshot.empty) {
+     const noRecordText = lang === "id" ? "📭 Belum ada catatan absensi" : "📭 尚無打卡紀錄";
+     list.innerHTML = `<p>${noRecordText}</p>`;
+     return;
+}
 
     let html = "";
 snapshot.forEach((doc) => {
