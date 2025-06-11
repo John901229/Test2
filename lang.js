@@ -4,14 +4,20 @@ const translations = {
     btnClockin: "上班打卡",
     btnClockout: "下班打卡",
     btnQuery: "查詢打卡紀錄",
-    titleRecord: "📋 打卡紀錄"
+    titleRecord: "📋 打卡紀錄",
+    promptName: "請輸入您的姓名：",
+    errorName: "⚠️ 請輸入有效的姓名再打卡！",
+    noRecord: "📭 尚無打卡紀錄"
   },
   id: {
     title: "Sistem Absensi",
     btnClockin: "Absen Masuk",
     btnClockout: "Absen Pulang",
     btnQuery: "Lihat Riwayat Absensi",
-    titleRecord: "📋 Riwayat Absensi"
+    titleRecord: "📋 Riwayat Absensi",
+    promptName: "Silakan masukkan nama Anda:",
+    errorName: "⚠️ Masukkan nama yang valid sebelum absen!",
+    noRecord: "📭 Belum ada catatan absensi"
   }
 };
 
