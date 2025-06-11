@@ -61,7 +61,7 @@ export async function handlePunch(type) {
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
- const isInsideFirst =
+const isInsideFirst =
   Math.abs(latitude - 25.0982990) < 0.001 &&
   Math.abs(longitude - 121.7878391) < 0.001;
 
