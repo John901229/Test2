@@ -1,103 +1,81 @@
-// (Firebase SDK imports and initialization)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js";
-import { getFirestore, collection, addDoc, Timestamp, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-// Your Firebase project configuration (replace with actual config object)
 const firebaseConfig = {
-  /* ... firebase config ... */
+  apiKey: "AIzaSyBSLCVS3oHZ6_M_xoPMvH2ihsbYUgfdTSo",
+  authDomain: "pwa-checkin-4dbe1.firebaseapp.com",
+  projectId: "pwa-checkin-4dbe1",
+  storageBucket: "pwa-checkin-4dbe1.appspot.com",
+  messagingSenderId: "467417750707",
+  appId: "1:467417750707:web:1c165c3c6353db694c0d3f"
 };
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
 
-/**
- * Handle clock in/out action.
- * @param {string} type - 'clockin' or 'clockout'
- */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const translations = {
+  zh: {
+    requireName: "❌ 請先回首頁打卡並輸入姓名。",
+    noRecord: "📭 尚無打卡紀錄"
+  },
+  id: {
+    requireName: "❌ Silakan kembali ke halaman utama dan masukkan nama Anda.",
+    noRecord: "📭 Belum ada catatan absensi"
+  }
+};
+
 export async function handlePunch(type) {
-  // Retrieve or prompt for username
-  let username = localStorage.getItem("username");
-  const lang = localStorage.getItem("lang") || "zh";
-  const t = translations[lang];  // use the translations defined in lang.js
+  let name = localStorage.getItem("username");
 
-  if (!username) {
-    // Ask for the user's name in the current language
-    const enteredName = prompt(t.promptName, "");
-    if (enteredName === null) {
-      // User canceled the prompt; do nothing
+  if (!name || name.trim() === "") {
+    const lang = localStorage.getItem("lang") || "zh";
+    const promptText = lang === "id" ? "Silakan masukkan nama Anda:" : "請輸入您的姓名：";
+    const errorText = lang === "id"
+      ? "⚠️ Masukkan nama yang valid sebelum absen!"
+      : "⚠️ 請輸入有效的姓名再打卡！";
+
+    name = prompt(promptText);
+    if (!name || name.trim() === "") {
+      alert(errorText);
       return;
     }
-    if (enteredName.trim() === "") {
-      // User submitted an empty name – show error and abort
-      alert(t.errorName);
-      return;
-    }
-    // Save the entered name and proceed
-    username = enteredName.trim();
-    localStorage.setItem("username", username);
+    localStorage.setItem("username", name.trim());
   }
 
-  try {
-    // Record the punch action in the Firestore "attendance" collection
-    await addDoc(collection(db, "attendance"), {
-      name: username,
-      type: type,                         // e.g., "clockin" or "clockout"
-      timestamp: Timestamp.now()
-    });
-    // (Optionally, you could provide a success message or update UI here)
-  } catch (e) {
-    console.error("Error recording attendance:", e);
-  }
-}
-
-/**
- * Load and display attendance records for the current user.
- * Called on the query page to populate the record list.
- */
-export async function loadRecords() {
-  const list = document.getElementById("record-list");
-  const username = localStorage.getItem("username");
-  const lang = localStorage.getItem("lang") || "zh";
-
-  if (!username) {
-    // If no user name is set, prompt to go back to home page (message currently only in Chinese in this version)
-    list.innerHTML = `<p>❌ 請先回首頁打卡並輸入姓名。</p>`;
+  if (!navigator.geolocation) {
+    document.getElementById("status").innerText = "❌ 無法取得 GPS 位置。";
     return;
   }
 
-  // Prepare a query to fetch the latest 20 records for this user, ordered by time (latest first)
-  const recordsQuery = query(
-    collection(db, "attendance"),
-    where("name", "==", username),
-    orderBy("timestamp", "desc"),
-    limit(20)
-  );
+  document.getElementById("status").innerHTML = "⏳ <b style='color:green'>處理中...</b>";
 
-  try {
-    const snapshot = await getDocs(recordsQuery);
-    if (snapshot.empty) {
-      // Show "no records" message in the appropriate language
-      const noRecordText = (lang === "id")
-        ? "📋 Belum ada catatan absensi"
-        : "📋 尚無打卡紀錄";
-      list.innerHTML = `<p>${noRecordText}</p>`;
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
+    const isInside =
+      Math.abs(latitude - 25.0982990) < 0.001 &&
+      Math.abs(longitude - 121.7878391) < 0.001;
+
+    if (!isInside) {
+      document.getElementById("status").innerHTML = "❌ <b style='color:red'>GPS 不在指定範圍內，禁止打卡！</b>";
       return;
     }
 
-    // Build the HTML list of records
-    let html = "";
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      // Convert timestamp to a readable string (using zh-TW locale for formatting)
-      const dateStr = data.timestamp?.toDate().toLocaleString("zh-TW") || "N/A";
-      const rawType = data.type || "";  // stored type (e.g., "clockin"/"clockout")
-      // Determine text label for type (Chinese text is used in this version)
-      const typeLabel = (rawType === "clockin" || rawType === "in")
-        ? "上班打卡"
-        : "下班打卡";
-      html += `<p>${dateStr} - ${typeLabel}</p>`;
-    });
-    list.innerHTML = html;
-  } catch (e) {
-    console.error("Error loading records:", e);
-  }
-}
+    try {
+      await addDoc(collection(db, "attendance"), {
+        name,
+        type,
+        timestamp: serverTimestamp(),
+        gps_status: "GPS 正常",
+        location: { lat: latitude, lng: longitude }
+      });
+      document.getElementById("status").innerHTML = `✅ <b style='color:green'>${type === 'clockin' ? '上班' : '下班'} 打卡成功！
