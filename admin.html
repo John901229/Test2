@@ -3,24 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <title>刪除所有打卡資料</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    #clear-btn {
+      padding: 14px 32px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #clear-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
   <h1>⚠️ 管理功能：清除所有打卡資料</h1>
-  <button id="clear-btn" style="
-  padding: 12px 24px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  margin-top: 30px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-">
-  🗑️ 一鍵清除所有資料
-</button>
+  <button id="clear-btn">🗑️ 一鍵清除所有資料</button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
@@ -49,7 +65,9 @@
       if (!confirmDelete) return;
 
       const snapshot = await getDocs(collection(db, "attendance"));
-      const deletions = snapshot.docs.map(docSnap => deleteDoc(doc(db, "attendance", docSnap.id)));
+      const deletions = snapshot.docs.map(docSnap =>
+        deleteDoc(doc(db, "attendance", docSnap.id))
+      );
       await Promise.all(deletions);
       alert("✅ 所有打卡資料已刪除！");
     });
