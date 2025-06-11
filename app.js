@@ -33,7 +33,8 @@ const translations = {
     clockin_success: "✅ 上班 打卡成功！",
     clockout_success: "✅ 下班 打卡成功！",
     gps_fail: "❌ GPS 取得失敗",
-    upload_fail: "❌ 上傳失敗"
+    upload_fail: "❌ 上傳失敗",
+    label_type: "類型："
   },
   id: {
     requireName: "❌ Silakan kembali ke halaman utama dan masukkan nama Anda.",
@@ -44,7 +45,8 @@ const translations = {
     clockin_success: "✅ Absen Masuk berhasil!",
     clockout_success: "✅ Absen Pulang berhasil!",
     gps_fail: "❌ Gagal mendapatkan GPS",
-    upload_fail: "❌ Gagal mengunggah"
+    upload_fail: "❌ Gagal mengunggah",
+    label_type: "Jenis:"
   }
 };
 
@@ -155,7 +157,7 @@ export async function loadRecords() {
       html += `
         <div class="log-card">
           <div class="line1">${d.name}｜${date}</div>
-          <div class="line2">📍GPS：${gpsStatus} ｜ 類型：${typeText}</div>
+          <div class="line2">📍GPS：${gpsStatus} ｜ ${t.label_type}${typeText}</div>
         </div>
       `;
     });
