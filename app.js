@@ -141,7 +141,8 @@ export async function loadRecords() {
     let html = "";
     snapshot.forEach((doc) => {
       const d = doc.data();
-      const date = d.timestamp?.toDate().toLocaleString("zh-TW") || "N/A";
+      const locale = lang === "id" ? "id-ID" : "zh-TW";
+const date = d.timestamp?.toDate().toLocaleString(locale) || "N/A";
       const gpsStatus = d.gps_status === "GPS 正常"
         ? (lang === "id" ? "GPS Normal" : "GPS 正常")
         : d.gps_status;
