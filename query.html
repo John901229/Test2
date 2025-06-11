@@ -1,28 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>打卡紀錄查詢</title>
+  <title>打卡紀錄</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="querypage">
+<body class="query-page">
   <div class="glass-container query-page">
-  <h1 class="titleRecord">📋 打卡紀錄</h1>
+    <h1 class="titleRecord">📋 打卡紀錄</h1>
     <div id="record-list"></div>
   </div>
 
   <script src="lang.js"></script>
+  <!-- Automatically apply saved language on load (to avoid needing to click the toggle again) -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-    toggleLang(); // ✅ 查詢頁一打開就自動套用語言
-  });
-</script>
+    document.addEventListener('DOMContentLoaded', toggleLang());
+  </script>
   <div class="lang-toggle" onclick="toggleLang()">🌐 語言</div>
 
   <script type="module">
-    import { loadRecords } from './app.js';
+    import { loadRecords } from "./app.js";
     window.addEventListener('DOMContentLoaded', loadRecords);
   </script>
 </body>
