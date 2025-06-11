@@ -4,12 +4,14 @@ const translations = {
     btnClockin: "上班打卡",
     btnClockout: "下班打卡",
     btnQuery: "查詢打卡紀錄"
+    titleＲecord: "📋 打卡紀錄"
   },
   id: {
     title: "Sistem Absensi",
     btnClockin: "Absen Masuk",
     btnClockout: "Absen Pulang",
     btnQuery: "Lihat Riwayat Absensi"
+    titleRecord: "📋 Riwayat Absensi"
   }
 };
 
