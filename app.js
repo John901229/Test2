@@ -82,10 +82,12 @@ export async function loadRecords() {
   const list = document.getElementById("record-list");
   const username = localStorage.getItem("username");
 
-  if (!username) {
-    list.innerHTML = "<p>❌ 請先回首頁打卡並輸入姓名。</p>";
-    return;
-  }
+if (!username) {
+  const lang = localStorage.getItem("lang") || "zh";
+  const t = translations[lang];
+  list.innerHTML = `<p>${t.requireName}</p>`;
+  return;
+}
 
   const q = query(
     collection(db, "attendance"),
