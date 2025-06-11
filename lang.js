@@ -70,5 +70,15 @@ function applySavedLang() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  applySavedLang();  // 直接套用儲存語言，不呼叫 toggleLang()
+  const saved = localStorage.getItem("lang");
+
+  if (!saved) {
+    // ✅ 第一次開啟，預設用 zh
+    localStorage.setItem("lang", "zh");
+    currentLang = "zh";
+  } else {
+    currentLang = saved;
+  }
+
+  applySavedLang(); // ✅ 不會亂跳，直接套用
 });
