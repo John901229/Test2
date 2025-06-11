@@ -4,26 +4,31 @@
   <meta charset="UTF-8" />
   <title>刪除所有打卡資料</title>
   <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: "Arial", sans-serif;
       background-color: #ffffff;
     }
 
-    h1 {
-      font-size: 26px;
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
       margin-bottom: 40px;
     }
 
     #clear-btn {
-      padding: 18px 36px;
-      font-size: 20px;
+      padding: 20px 40px;
+      font-size: 22px;
       border: none;
       border-radius: 12px;
       background-color: #007bff;
@@ -39,8 +44,10 @@
   </style>
 </head>
 <body>
-  <h1>⚠️ 管理功能：清除所有打卡資料</h1>
-  <button id="clear-btn">🗑️ 一鍵清除所有資料</button>
+  <div class="container">
+    <h1>⚠️ 管理功能：清除所有打卡資料</h1>
+    <button id="clear-btn">🗑️ 一鍵清除所有資料</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
