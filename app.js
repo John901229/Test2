@@ -26,11 +26,21 @@ const db = getFirestore(app);
 const translations = {
   zh: {
     requireName: "❌ 請先回首頁打卡並輸入姓名。",
-    noRecord: "📭 尚無打卡紀錄"
+    noRecord: "📭 尚無打卡紀錄",
+    gps_ok: "GPS 正常",
+    processing: "⏳ <b style='color:green'>處理中...</b>",
+    gps_out_of_range: "❌ <b style='color:red'>GPS 不在指定範圍內，禁止打卡！</b>",
+    clockin_success: "✅ 上班 打卡成功！",
+    clockout_success: "✅ 下班 打卡成功！"
   },
   id: {
     requireName: "❌ Silakan kembali ke halaman utama dan masukkan nama Anda.",
-    noRecord: "📭 Belum ada catatan absensi"
+    noRecord: "📭 Belum ada catatan absensi",
+    gps_ok: "GPS Normal",
+    processing: "⏳ <b style='color:green'>Sedang diproses...</b>",
+    gps_out_of_range: "❌ <b style='color:red'>GPS di luar area yang ditentukan, tidak boleh absen!",
+    clockin_success: "✅ Absen Masuk berhasil!",
+    clockout_success: "✅ Absen Pulang berhasil!"
   }
 };
 
