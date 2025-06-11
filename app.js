@@ -78,4 +78,59 @@ export async function handlePunch(type) {
         gps_status: "GPS 正常",
         location: { lat: latitude, lng: longitude }
       });
-      document.getElementById("status").innerHTML = `✅ <b style='color:green'>${type === 'clockin' ? '上班' : '下班'} 打卡成功！
+      document.getElementById("status").innerHTML = `✅ <b style='color:green'>${type === 'clockin' ? '上班' : '下班'} 打卡成功！</b>`;
+    } catch (e) {
+      document.getElementById("status").innerText = `❌ 上傳失敗：${e.message}`;
+    }
+  }, () => {
+    document.getElementById("status").innerText = "❌ GPS 取得失敗";
+  });
+}
+
+export async function loadRecords() {
+  const list = document.getElementById("record-list");
+  const username = localStorage.getItem("username");
+  const lang = localStorage.getItem("lang") || "zh";
+  const t = translations[lang];
+
+  if (!username) {
+    list.innerHTML = `<p>${t.requireName}</p>`;
+    return;
+  }
+
+  const q = query(
+    collection(db, "attendance"),
+    where("name", "==", username),
+    orderBy("timestamp", "desc"),
+    limit(20)
+  );
+
+  try {
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      list.innerHTML = `<p>${t.noRecord}</p>`;
+      return;
+    }
+
+    let html = "";
+    snapshot.forEach((doc) => {
+      const d = doc.data();
+      const date = d.timestamp?.toDate().toLocaleString("zh-TW") || "N/A";
+      const gpsEmoji = d.gps_status === "GPS 正常" ? "✅" : "❌";
+      const rawType = d.type || "";
+      const typeText = (rawType === "clockin" || rawType === "in") ? "上班" :
+                       (rawType === "clockout" || rawType === "out") ? "下班" :
+                       rawType;
+
+      html += `
+        <div class="log-card">
+          <div class="line1">${d.name}｜${date}</div>
+          <div class="line2">📍GPS：${d.gps_status} ｜ 類型：${typeText}</div>
+        </div>
+      `;
+    });
+    list.innerHTML = html;
+  } catch (e) {
+    list.innerHTML = `<p>❌ 查詢錯誤：${e.message}</p>`;
+  }
+}
