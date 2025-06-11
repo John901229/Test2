@@ -45,6 +45,8 @@ function toggleLang() {
   if (titleRecordEl) titleRecordEl.innerText = t.titleRecord;
 
   localStorage.setItem("lang", currentLang);
+
+  if (typeof loadRecords === "function") loadRecords();
 }
 
 window.addEventListener("DOMContentLoaded", () => {
