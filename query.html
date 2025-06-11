@@ -14,9 +14,11 @@
 
   <script src="lang.js"></script>
   
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof toggleLang === "function") {
       toggleLang();
+    }
   });
 </script>
   
