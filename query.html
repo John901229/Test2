@@ -16,9 +16,7 @@
   
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    if (typeof toggleLang === "function") {
-      toggleLang();
-    }
+    applySavedLang();  // ✅ 只套用已儲存語言，不自動切換
   });
 </script>
   
