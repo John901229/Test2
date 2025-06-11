@@ -7,7 +7,7 @@ const translations = {
     titleRecord: "📋 打卡紀錄",
     promptName: "請輸入您的姓名：",
     errorName: "⚠️ 請輸入有效的姓名再打卡！",
-    noRecord: "📭 尚無打卡紀錄"
+    noRecord: "📭 尚無打卡紀錄",
     requireName: "❌ 請先回首頁打卡並輸入姓名。",
   },
   id: {
@@ -18,7 +18,7 @@ const translations = {
     titleRecord: "📋 Riwayat Absensi",
     promptName: "Silakan masukkan nama Anda:",
     errorName: "⚠️ Masukkan nama yang valid sebelum absen!",
-    noRecord: "📭 Belum ada catatan absensi"
+    noRecord: "📭 Belum ada catatan absensi",
     requireName: "❌ Silakan kembali ke halaman utama dan masukkan nama Anda.",
   }
 };
