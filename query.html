@@ -8,15 +8,18 @@
 </head>
 <body class="querypage">
   <div class="glass-container query-page">
-   <h1 class="title">📋 打卡紀錄</h1>    
+    <h1 class="title">📋 打卡紀錄</h1>
     <div id="record-list"></div>
   </div>
 
+  <!-- ✅ 語言切換放上面 -->
+  <script src="lang.js"></script>
+  <div class="lang-toggle" onclick="toggleLang()">🌐 語言</div>
+
+  <!-- ✅ Firestore 查詢放下面 -->
   <script type="module">
     import { loadRecords } from './app.js';
     window.addEventListener('DOMContentLoaded', loadRecords);
   </script>
-  <div class="lang-toggle" onclick="toggleLang()">🌐 語言</div>
-<script src="lang.js"></script>
 </body>
 </html>
