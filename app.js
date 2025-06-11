@@ -23,6 +23,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const lang = localStorage.getItem("lang") || "zh";
 
 export async function handlePunch(type) {
   let name = localStorage.getItem("username");
