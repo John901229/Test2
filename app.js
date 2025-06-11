@@ -72,23 +72,24 @@ export async function handlePunch(type) {
   }
 
   const lang = localStorage.getItem("lang") || "zh";
-const t = translations[lang];
-document.getElementById("status").innerHTML = t.processing;
+  const t = translations[lang];
+  document.getElementById("status").innerHTML = t.processing;
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
-const isInsideFirst =
-  Math.abs(latitude - 25.0982990) < 0.001 &&
-  Math.abs(longitude - 121.7878391) < 0.001;
 
-const isInsideSecond =
-  Math.abs(latitude - 25.1430205) < 0.001 &&
-  Math.abs(longitude - 121.7979220) < 0.001;
+    const isInsideFirst =
+      Math.abs(latitude - 25.0982990) < 0.001 &&
+      Math.abs(longitude - 121.7878391) < 0.001;
 
-const isInside = isInsideFirst || isInsideSecond;
+    const isInsideSecond =
+      Math.abs(latitude - 25.1430205) < 0.001 &&
+      Math.abs(longitude - 121.7979220) < 0.001;
+
+    const isInside = isInsideFirst || isInsideSecond;
 
     if (!isInside) {
-     document.getElementById("status").innerHTML = t.gps_out_of_range;
+      document.getElementById("status").innerHTML = t.gps_out_of_range;
       return;
     }
 
@@ -97,13 +98,13 @@ const isInside = isInsideFirst || isInsideSecond;
         name,
         type,
         timestamp: serverTimestamp(),
-        gps_status: "GPS 正常",
+        gps_status: t.gps_ok,
         location: { lat: latitude, lng: longitude }
       });
-     const successMsg = type === 'clockin' ? t.clockin_success : t.clockout_success;
-document.getElementById("status").innerHTML = successMsg;
+      const successMsg = type === 'clockin' ? t.clockin_success : t.clockout_success;
+      document.getElementById("status").innerHTML = successMsg;
     } catch (e) {
-      document.getElementById("status").innerText = ${t.upload_fail}：${e.message};
+      document.getElementById("status").innerText = `${t.upload_fail}：${e.message}`;
     }
   }, () => {
     document.getElementById("status").innerText = t.gps_fail;
@@ -117,7 +118,7 @@ export async function loadRecords() {
   const t = translations[lang];
 
   if (!username) {
-    list.innerHTML = <p>${t.requireName}</p>;
+    list.innerHTML = `<p>${t.requireName}</p>`;
     return;
   }
 
@@ -131,7 +132,7 @@ export async function loadRecords() {
   try {
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
-      list.innerHTML = <p>${t.noRecord}</p>;
+      list.innerHTML = `<p>${t.noRecord}</p>`;
       return;
     }
 
@@ -140,26 +141,26 @@ export async function loadRecords() {
       const d = doc.data();
       const date = d.timestamp?.toDate().toLocaleString("zh-TW") || "N/A";
       const gpsStatus = d.gps_status === "GPS 正常"
-  ? (lang === "id" ? "GPS Normal" : "GPS 正常")
-  : d.gps_status;
-const rawType = d.type || "";
-let typeText = rawType;
+        ? (lang === "id" ? "GPS Normal" : "GPS 正常")
+        : d.gps_status;
 
-if (rawType === "clockin" || rawType === "in") {
-  typeText = lang === "id" ? "Absen Masuk" : "上班";
-} else if (rawType === "clockout" || rawType === "out") {
-  typeText = lang === "id" ? "Absen Pulang" : "下班";
-}
+      const rawType = d.type || "";
+      let typeText = rawType;
+      if (rawType === "clockin" || rawType === "in") {
+        typeText = lang === "id" ? "Absen Masuk" : "上班";
+      } else if (rawType === "clockout" || rawType === "out") {
+        typeText = lang === "id" ? "Absen Pulang" : "下班";
+      }
 
-      html += 
+      html += `
         <div class="log-card">
           <div class="line1">${d.name}｜${date}</div>
-          <div class="line2">📍GPS：${d.gps_status} ｜ 類型：${typeText}</div>
+          <div class="line2">📍GPS：${gpsStatus} ｜ 類型：${typeText}</div>
         </div>
-      ;
+      `;
     });
     list.innerHTML = html;
   } catch (e) {
-    list.innerHTML = <p>❌ 查詢錯誤：${e.message}</p>;
+    list.innerHTML = `<p>❌ 查詢錯誤：${e.message}</p>`;
   }
 }
