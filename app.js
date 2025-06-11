@@ -31,7 +31,9 @@ const translations = {
     processing: "⏳ <b style='color:green'>處理中...</b>",
     gps_out_of_range: "❌ <b style='color:red'>GPS 不在指定範圍內，禁止打卡！</b>",
     clockin_success: "✅ 上班 打卡成功！",
-    clockout_success: "✅ 下班 打卡成功！"
+    clockout_success: "✅ 下班 打卡成功！",
+    gps_fail: "❌ GPS 取得失敗",
+    upload_fail: "❌ 上傳失敗"
   },
   id: {
     requireName: "❌ Silakan kembali ke halaman utama dan masukkan nama Anda.",
@@ -40,7 +42,9 @@ const translations = {
     processing: "⏳ <b style='color:green'>Sedang diproses...</b>",
     gps_out_of_range: "❌ <b style='color:red'>GPS di luar area yang ditentukan, tidak boleh absen!",
     clockin_success: "✅ Absen Masuk berhasil!",
-    clockout_success: "✅ Absen Pulang berhasil!"
+    clockout_success: "✅ Absen Pulang berhasil!",
+    gps_fail: "❌ Gagal mendapatkan GPS",
+    upload_fail: "❌ Gagal mengunggah"
   }
 };
 
@@ -67,7 +71,9 @@ export async function handlePunch(type) {
     return;
   }
 
-  document.getElementById("status").innerHTML = "⏳ <b style='color:green'>處理中...</b>";
+  const lang = localStorage.getItem("lang") || "zh";
+const t = translations[lang];
+document.getElementById("status").innerHTML = t.processing;
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
@@ -82,7 +88,7 @@ const isInsideSecond =
 const isInside = isInsideFirst || isInsideSecond;
 
     if (!isInside) {
-      document.getElementById("status").innerHTML = "❌ <b style='color:red'>GPS 不在指定範圍內，禁止打卡！</b>";
+     document.getElementById("status").innerHTML = t.gps_out_of_range;
       return;
     }
 
@@ -94,12 +100,13 @@ const isInside = isInsideFirst || isInsideSecond;
         gps_status: "GPS 正常",
         location: { lat: latitude, lng: longitude }
       });
-      document.getElementById("status").innerHTML = `✅ <b style='color:green'>${type === 'clockin' ? '上班' : '下班'} 打卡成功！</b>`;
+     const successMsg = type === 'clockin' ? t.clockin_success : t.clockout_success;
+document.getElementById("status").innerHTML = successMsg;
     } catch (e) {
-      document.getElementById("status").innerText = `❌ 上傳失敗：${e.message}`;
+      document.getElementById("status").innerText = ${t.upload_fail}：${e.message};
     }
   }, () => {
-    document.getElementById("status").innerText = "❌ GPS 取得失敗";
+    document.getElementById("status").innerText = t.gps_fail;
   });
 }
 
@@ -110,7 +117,7 @@ export async function loadRecords() {
   const t = translations[lang];
 
   if (!username) {
-    list.innerHTML = `<p>${t.requireName}</p>`;
+    list.innerHTML = <p>${t.requireName}</p>;
     return;
   }
 
@@ -124,7 +131,7 @@ export async function loadRecords() {
   try {
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
-      list.innerHTML = `<p>${t.noRecord}</p>`;
+      list.innerHTML = <p>${t.noRecord}</p>;
       return;
     }
 
@@ -132,21 +139,27 @@ export async function loadRecords() {
     snapshot.forEach((doc) => {
       const d = doc.data();
       const date = d.timestamp?.toDate().toLocaleString("zh-TW") || "N/A";
-      const gpsEmoji = d.gps_status === "GPS 正常" ? "✅" : "❌";
-      const rawType = d.type || "";
-      const typeText = (rawType === "clockin" || rawType === "in") ? "上班" :
-                       (rawType === "clockout" || rawType === "out") ? "下班" :
-                       rawType;
+      const gpsStatus = d.gps_status === "GPS 正常"
+  ? (lang === "id" ? "GPS Normal" : "GPS 正常")
+  : d.gps_status;
+const rawType = d.type || "";
+let typeText = rawType;
 
-      html += `
+if (rawType === "clockin" || rawType === "in") {
+  typeText = lang === "id" ? "Absen Masuk" : "上班";
+} else if (rawType === "clockout" || rawType === "out") {
+  typeText = lang === "id" ? "Absen Pulang" : "下班";
+}
+
+      html += 
         <div class="log-card">
           <div class="line1">${d.name}｜${date}</div>
           <div class="line2">📍GPS：${d.gps_status} ｜ 類型：${typeText}</div>
         </div>
-      `;
+      ;
     });
     list.innerHTML = html;
   } catch (e) {
-    list.innerHTML = `<p>❌ 查詢錯誤：${e.message}</p>`;
+    list.innerHTML = <p>❌ 查詢錯誤：${e.message}</p>;
   }
 }
