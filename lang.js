@@ -48,11 +48,27 @@ function toggleLang() {
 
   if (typeof loadRecords === "function") loadRecords();
 }
+function applySavedLang() {
+  const saved = localStorage.getItem("lang") || "zh";
+  currentLang = saved;
+  const t = translations[currentLang];
+
+  const titleEl = document.querySelector(".title");
+  if (titleEl) titleEl.innerText = t.title;
+
+  const btnIn = document.querySelector(".btnClockin");
+  if (btnIn) btnIn.innerText = t.btnClockin;
+
+  const btnOut = document.querySelector(".btnClockout");
+  if (btnOut) btnOut.innerText = t.btnClockout;
+
+  const btnQuery = document.querySelector(".btnQuery");
+  if (btnQuery) btnQuery.innerText = t.btnQuery;
+
+  const titleRecordEl = document.querySelector(".titleRecord");
+  if (titleRecordEl) titleRecordEl.innerText = t.titleRecord;
+}
 
 window.addEventListener("DOMContentLoaded", () => {
-  const saved = localStorage.getItem("lang");
-  if (saved && saved !== currentLang) {
-    currentLang = saved;
-    toggleLang();
-  }
+  applySavedLang();  // 直接套用儲存語言，不呼叫 toggleLang()
 });
