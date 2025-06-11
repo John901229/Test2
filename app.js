@@ -61,9 +61,19 @@ export async function handlePunch(type) {
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
-    const isInside =
-      Math.abs(latitude - 25.0982990) < 0.001 &&
-      Math.abs(longitude - 121.7878391) < 0.001;
+   const isInsideFirst =
+     Math.abs(latitude - 25.0982990) < 0.001 &&
+     Math.abs(longitude - 121.7878391) < 0.001;
+
+   const isInsideFirst =
+     Math.abs(latitude - 25.0982990) < 0.001 &&
+     Math.abs(longitude - 121.7878391) < 0.001;
+
+   const isInsideSecond =
+     Math.abs(latitude - 25.1430205) < 0.001 &&
+     Math.abs(longitude - 121.7979220) < 0.001;
+
+   const isInside = isInsideFirst || isInsideSecond;
 
     if (!isInside) {
       document.getElementById("status").innerHTML = "❌ <b style='color:red'>GPS 不在指定範圍內，禁止打卡！</b>";
