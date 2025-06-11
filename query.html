@@ -14,6 +14,13 @@
 
   <div class="lang-toggle" onclick="toggleLang()">🌐 語言</div>
   <script src="lang.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      toggleLang();
+  });
+</script>
+  
   <script type="module">
     import { loadRecords } from './app.js';
     window.addEventListener('DOMContentLoaded', loadRecords);
