@@ -25,6 +25,9 @@ function toggleLang() {
   document.querySelector(".btnClockin").innerText = t.btnClockin;
   document.querySelector(".btnClockout").innerText = t.btnClockout;
   document.querySelector(".btnQuery").innerText = t.btnQuery;
+  
+  const titleRecordEl = document.querySelector(".titleRecord");
+  if (titleRecordEl) titleRecordEl.innerText = t.titleRecord;
 
   localStorage.setItem("lang", currentLang);
 }
